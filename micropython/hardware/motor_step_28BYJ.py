@@ -90,10 +90,10 @@ class Stepper28BYJ:
                 off: set all output ports to zero after the number of steps is
                  finished
         """
-        if (self.steps == 'wave' or self.steps == 'full') and delay < 0.002:
+        
+        if (self.steps == 'full' or self.steps == 'wave') and (delay <= 0.004):
             print("Delay too small. Motor might not respond correctly.")
-
-        elif (self.steps == 'half' and delay < 0.001):
+        elif (self.steps == 'half') and (delay <= 0.002):
             print("Delay too small. Motor might not respond correctly.")
 
         for i in range(N):
@@ -105,5 +105,5 @@ class Stepper28BYJ:
 
 
 if __name__ == "__main__":
-    step = Stepper28BYJ([0, 1, 2, 3], steps='full')
-    step.run()
+    step = Stepper28BYJ([0, 1, 2, 3], steps='half')
+    step.run(delay=0.002)
