@@ -1,6 +1,9 @@
 # Hardware 
 
 ## motors
+**[28BYJ-48](hardware#28byj-48)** <br>
+**[DC-motor](#dc-motor-small)** <br>
+
 
 ### 28BYJ-48
 The [28BYJ-48](28byj48-step-motor-datasheet.pdf) is a cheap steppermotor. Together with the ULN2003 driverboard it is easy to setup.
