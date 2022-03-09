@@ -33,7 +33,7 @@ A small DC motor (upto 200mA), like the [Adafruit DC Toy motor](https://www.adaf
 The base of the transistor is wired to the RaspberryPi Pico (PIN 20) trough the resistor. The emittor is wired to the ground of the RaspberryPi Pico and the collector is wired trough the diode to one terminal of the motor AND the VBUS port of the RaspberryPi Pico (connected trough USB this allows for 5V, upto 300 mA). The other terminal of the motor is connected directly to the collector pin of the transistor. 
 ![Wiring of the RaspberryPi Pico and the DC-motor](DCmotor.png)
 
-The motor can be controlled in an [on-off](motor_DC_OnOff.py) version:
+The motor can be controlled in an [on-off](motor_DC_onoff.py) version:
 ```python
 import machine
 import time
