@@ -1,7 +1,7 @@
 # Hardware 
 
 ## motors
-**[28BYJ-48](hardware#28byj-48)** <br>
+**[28BYJ-48](#28byj-48)** <br>
 **[DC-motor](#dc-motor-small)** <br>
 
 
