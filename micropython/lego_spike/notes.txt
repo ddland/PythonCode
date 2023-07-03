@@ -1,0 +1,2 @@
+https://github.com/maarten-pennings/Lego-Mindstorms/blob/main/ms4/faq.md#python-specific-questions
+https://github.com/antonvh/LEGO-HuskyLenslib
