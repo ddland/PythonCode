@@ -1,6 +1,6 @@
 import time
 
-time.sleep(1) # need a delay else no connected hardware detected!
+time.sleep(2) # need a delay else no connected hardware detected!
 
 # example where a motor is connected to port A and a distance sensor to port C
 # moves the motor 30 degrees forward if an object is detected within 10 cm.
@@ -11,8 +11,8 @@ time.sleep(1) # need a delay else no connected hardware detected!
 # based on
 # https://antonsmindstorms.com/2021/01/14/advanced-undocumented-python-in-spike-prime-and-mindstorms-hubs/
 
-dist_sensor = hub.port.C.device
-motor = hub.port.A.motor
+dist_sensor = hub.port.B.device
+motor = hub.port.D.motor
 
 while True:
     dist = dist_sensor.get()[0]

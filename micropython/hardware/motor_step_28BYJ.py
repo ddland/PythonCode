@@ -106,4 +106,4 @@ class Stepper28BYJ:
 
 if __name__ == "__main__":
     step = Stepper28BYJ([0, 1, 2, 3], steps='half')
-    step.run(delay=0.002)
+    step.run(delay=0.002, N=5000)
