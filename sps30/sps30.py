@@ -25,7 +25,6 @@ class SPS30:
     def __init__(self, i2c, print_output=False):
         self.i2c = i2c
         self.output = print_output
-        
         self.found = self.__findi2c()
     
     def write_read(self, cmd, nbytes=60):
@@ -37,7 +36,7 @@ class SPS30:
     def start_measurement(self):
         cmd = bytearray([0x00, 0x10, 0x03, 0x00, self.calc_crc8([0x03, 0x00])])
         self.i2c.writeto(self.address,cmd)
-
+            
     def print_data(self):
         self.read_data()
         for ii, val in enumerate(self.last_measurement):
@@ -115,11 +114,16 @@ if __name__ == "__main__":
     time.sleep(5)
     sps30.start_measurement()
     run = True
+    errors = 0
     while run:
         try:
             sps30.read_data()
-            print(sps30.last_measurement[:4])
+            print(sps30.last_measurement)
             time.sleep(5)
+            errors = 0
+        except OSError as err: # sensor might give some EIO errors at startup
+            errors += 1
+            print(err, errors)
         except KeyboardInterrupt:
             run = False
         
