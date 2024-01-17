@@ -57,8 +57,10 @@ if __name__ == "__main__":
     import time
     sda = machine.Pin(0)
     scl = machine.Pin(1)
-    i2c = machine.I2C(sda=sda, scl=scl, freq=400000)
+    i2c = machine.I2C(0, sda=sda, scl=scl, freq=400000)
     mcp = MCP4725(i2c)
     mcp.write(2**11) # 12 bit number, 2**12-1 maximal
-    time.sleep(1)
+    time.sleep(10)
     mcp.write(2**4)
+    time.sleep(5)
+    mcp.write(2**8)
