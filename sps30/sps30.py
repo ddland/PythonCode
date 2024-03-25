@@ -18,6 +18,7 @@ import struct
 class SPS30:
     address = 0x69
     start_measurement = [0x00, 0x10, 0x03, 0x00] # float numbers as return values
+    cleanup = [0x56, 0x07]
     data_header = ['mass pm 1.0', 'mass pm 2.5', 'mass pm 4.0', 'mass pm 10',
             'number pm 0.5', 'number pm 1.0', 'number pm 2.5', 'number pm 4.0',
             'number pm 10', 'typical size']
@@ -35,8 +36,10 @@ class SPS30:
     
     def start_measurement(self):
         cmd = bytearray([0x00, 0x10, 0x03, 0x00, self.calc_crc8([0x03, 0x00])])
-        self.i2c.writeto(self.address,cmd)
-            
+        self.i2c.writeto(self.address, cmd) # measurement mode
+        self.i2c.writeto(self.address, bytearray([0x56, 0x07])) #cleanup
+        time.sleep(10)
+        
     def print_data(self):
         self.read_data()
         for ii, val in enumerate(self.last_measurement):
@@ -121,8 +124,10 @@ if __name__ == "__main__":
             print(sps30.last_measurement)
             time.sleep(5)
             errors = 0
-        except OSError as err: # sensor might give some EIO errors at startup
+        except OSError as err: # catch some EIO errors
             errors += 1
+            if errors > 10:
+                run = False
             print(err, errors)
         except KeyboardInterrupt:
             run = False

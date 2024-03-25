@@ -10,6 +10,8 @@ Also prints all the data to the terminal.
 Change the serial port and output.
 """
 
+
+# in Windows CMD-window: type mode for a list of com ports
 ser = serial.Serial('/dev/ttyACM0')
 output = 'datafile.csv'
 
@@ -18,7 +20,9 @@ run = True
 
 while run:
     try:
-        data = ser.readline().decode().strip()[1:-1].split(',')
+        data = ser.readline()
+        print(data)
+        data = data.decode().strip()[1:-1].split(',')
         data = [float(ii) for ii in data]
         data_str = ''
         for val in data:
