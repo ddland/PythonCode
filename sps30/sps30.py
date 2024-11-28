@@ -37,6 +37,7 @@ class SPS30:
     def start_measurement(self):
         cmd = bytearray([0x00, 0x10, 0x03, 0x00, self.calc_crc8([0x03, 0x00])])
         self.i2c.writeto(self.address, cmd) # measurement mode
+        time.sleep(1)
         self.i2c.writeto(self.address, bytearray([0x56, 0x07])) #cleanup
         time.sleep(10)
         
