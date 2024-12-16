@@ -63,7 +63,7 @@ class TTI1604:
             182: '5', 183: '5.',
             190: '6', 191: '6.',
             224: '7', 225: '7.',
-            254: '8', 256: '8.',
+            254: '8', 255: '8.',
             230: '9', 231: '9.',
             238: 'A', 156: 'C',
             122: 'D', 158: 'E',
@@ -129,7 +129,7 @@ class TTI1604:
             print('no data measured. Is the device in remote mode (u) or on (g)?')
             return False
         val = ''
-        if char[3] & 1 << 0 != 0: 
+        if char[3] & 2 << 0 != 0: 
             val = '-'
         for ii in range(4,9):
             if char[ii] in self.keys.keys():
