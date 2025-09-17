@@ -5,22 +5,14 @@ import time
 
 Connect the device and set the serial port. After that use the commands:
 
-    send_command(ser, command, debug=False)
-        send a binary string (b'a' for example) to the device. Commands are
-        the key-presses as if pressed on the device.
+    send_command(str)
+        Send the key-presses to the DMM in order to configure the device.
+    val = read()
+        Read the display value on the DMM into the variable val.
+    val, acdc, range_info, range_type =  tti.read(full_output=True)
+        Read the display value and all the settings of the reading.
+        The settings are the dictionary keys for the TTI class.
 
-    char = read_data(ser)
-        reads the data from the serial bus and stores the (10 characters) in
-        char
-
-    parse_number_unit(char)
-        parse the readout and returns the number from the display. If resistance
-        is measured the kOhm or Ohm settings are taking into account.
-
-    parse_data(char)
-        parse all the data in the 10-char string from the device. 
-        all settings are printed.
-   
 The DMM has multiple keys which can activate the settings. Changing the settings
 is done as if you press the keys on the front of the device.
 Every key has a character translation. Sending the character to the device is
@@ -52,6 +44,9 @@ measurement.
 
 20231102 
  initial release of the script. Working, but not documented / optimised yet.
+20250917
+ added tti.stop() to hopefully close the serial port
+ extended tt.read() with full_output=True which also returns the settings of the value.
 """
 
 class TTI1604:
@@ -92,7 +87,11 @@ class TTI1604:
         self.ser = serial.Serial(tty, baudrate=9600, dsrdtr=0, timeout=1)
         self.ser.rts = 0
         self.ser.dtr = 1
-        
+     
+    def stop(self):
+        self.ser.close()
+
+
     def read_raw_data(self):
         """ Read a string of 10 bytes from the serial bus
         arguments:
@@ -104,15 +103,23 @@ class TTI1604:
         self.ser.reset_output_buffer()
         return self.ser.read(10)
     
-    def read(self):
+    def read(self, full_output=False):
         """ Read a value from the DMM
         arguments:
-            None
+            full_output [default False] - give full output if true (value, unit, AC/DC,
+            range) where value is the measured numerical value, unit the physical unit
+            of the measuremnt, AC/DC the setting for altenating or direct current
+            measurements and the range the allowed input range for the current settings.
+            If False only the value is returned.
         return:
             float - value on display. If resistance is measured the return value is
-            in Ohms.
+                    in Ohms.
+            if full_output = True:
+                    float, int, int, int: where float is the value on display and the
+                    ints are the dictionary keys for the ACDC, range_info and 
+                    range_type_info dictonaries defined within this class.
         """
-        return self.parse_number_unit(self.read_raw_data())
+        return self.parse_number_unit(self.read_raw_data(), full_output)
     
     def parse_number(self, char=None):
         """ Parse the 10 byte string from the DMM into a number
@@ -140,7 +147,7 @@ class TTI1604:
             pass
         return val
 
-    def parse_number_unit(self, char=None):
+    def parse_number_unit(self, char=None, full_output=False):
         """ Parse the 10 byte string from the DMM into a number
         arguments:
             char - bytestring or None
@@ -156,12 +163,16 @@ class TTI1604:
             print('no data measured. Is the device in remote mode?')
             return False
         val = self.parse_number(char)
+        dmm_acdc = (char[1] & (( 1 << 4) -1)) >> 3  # 1 AC, 0 DC
         dmm_range  = (char[1] & (( 1 << 7) -1))  >> 4
         dmm_type = char[1] & (( 1 << 3) -1) # last 3 bits
         # multiple Ohms by 1000 (if kOhm ligth is on)
         if isinstance(val, float) and  (dmm_type == 5) and (dmm_range != 0):
             val = val*1000
-        return val
+        if full_output:
+            return val, dmm_acdc, dmm_range, dmm_type
+        else:
+            return val
 
     def show_settings(self, char=None):
         """ Show all settings of the measurement
